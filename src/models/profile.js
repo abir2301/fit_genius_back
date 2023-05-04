@@ -41,10 +41,10 @@ const profile = (sequelize, Sequelize) => {
         type: Sequelize.TEXT,
         type: Sequelize.ENUM(
           "sedentary",
-          "lightly active",
-          "moderately active",
-          "very active",
-          "extra active"
+          "lightly_active",
+          "moderately_active",
+          "very_active",
+          "extra_active"
         ),
 
         allowNull: true,
@@ -62,7 +62,7 @@ const profile = (sequelize, Sequelize) => {
         // },
       },
       goal: {
-        type: Sequelize.ENUM("lose weight", "maintain weight", "gain weight"),
+        type: Sequelize.ENUM("lose_weight", "maintain_weight", "gain_weight"),
         allowNull: true,
         // validate: {
         //   isIn: {
