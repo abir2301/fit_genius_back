@@ -7,8 +7,6 @@ const Profile = db.profile;
 const Hp = db.hp;
 const UserHp = db.userHp;
 const jwt = require("jsonwebtoken");
-const emailSending = require("../routes/mailsending");
-const { gzipSync, gunzipSync } = require("zlib");
 const { where } = require("sequelize");
 const auth = require("../routes/verifyjwttoken");
 //done
@@ -85,9 +83,7 @@ exports.userLogin = async (req, res, next) => {
         if (!isMatch) {
           return res.status(401).json({ message: "Invalid email or password" });
         }
-        var token = jwt.sign({ id: query.id }, "privateKey", {
-          expiresIn: 86400,
-        });
+        var token = jwt.sign({ id: query.id }, "privateKey");
         //email send with code
         const user = { id: query.id, name: query.name, email: query.email };
         res.send({ user: user, token: token }).status(200);
@@ -198,6 +194,7 @@ exports.getUsers = async (req, res) => {
 };
 
 exports.addHP = async (req, res) => {
+  const list = req.body.list;
   try {
     const user = await User.findOne({
       where: {
@@ -206,25 +203,71 @@ exports.addHP = async (req, res) => {
     });
 
     if (!user) {
-      res.status(404).json({ message: "dont fint user " });
+      res.status(404).json({ message: "not found user" });
     } else {
-      const hp = await Hp.findOne({
-        where: {
-          name: req.body.name,
-        },
-      });
-      console.log(hp);
-      if (!hp) {
-        res.status(404).json({ message: "dont find  health problem " });
-      } else {
-        const data1 = { userId: req.user, HpId: hp.id };
-        const data = await UserHp.create(data1);
-        if (data) {
-          res.status(200).json({ message: " user hp added succesully " });
-        } else {
-          res.status(500).json({ message: error.message });
+      i = 0;
+      list.forEach(async (element) => {
+        i++;
+        const hp = await Hp.findOne({
+          where: {
+            name: element.name,
+          },
+        });
+        console.log(hp);
+        if (hp) {
+          const exist = await UserHp.findOne({
+            where: [
+              {
+                userId: req.user,
+              },
+              {
+                HpId: hp.id,
+              },
+            ],
+          });
+          if (!exist) {
+            const payload = {
+              userId: req.user,
+              HpId: hp.id,
+            };
+
+            await UserHp.create(payload);
+          }
         }
+      });
+      if (i === list.length) {
+        res.status(200).send({ message: "hp inserted" });
       }
     }
-  } catch (error) {}
+  } catch (error) {
+    // res.send({ error: error });
+  }
 };
+
+//  else {
+//   const hp = await Hp.findOne({
+//     where: {
+//       name: req.body.name,
+//     },
+//   });
+//   console.log(hp);
+//   if (!hp) {
+//     res.status(404).json({ error: "not found hp" });
+//   } else {
+//     const data1 = { userId: req.user, HpId: hp.id };
+//     const exist = await UserHp.findOne({
+//       where: {
+//         HpId: hp.id,
+//       },
+//     });
+//     if (!exist) {
+//       console.log("not exist ");
+//       const data = await UserHp.create(data1);
+
+//       res.status(200).json({ data: data });
+//     } else {
+//       res.status(422).json({ message: "alredy exist" });
+//     }
+//     res.status(500).json({ message: error.message });
+//   }
+// }

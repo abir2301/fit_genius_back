@@ -4,7 +4,7 @@ const healthProblem = (sequelize, Sequelize) => {
     {
       name: {
         type: Sequelize.STRING,
-        unique: true,
+        // unique: true,
         allowNull: false,
         //  validate: {
         //    allowNull: {
