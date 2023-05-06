@@ -12,9 +12,12 @@ exports.create = async (req, res) => {
     });
     const plan = new Program({
       desc: "here is the plan ",
+      objectif: 2,
       meals: [
         {
           name: "meal 1",
+          isDone: false,
+          fibers: 1200,
           carbs: 120,
           fats: 500,
           protein: 100,
@@ -35,6 +38,7 @@ exports.create = async (req, res) => {
               name: "ex1",
               image: "image",
               duration: 10,
+              isDone: false,
             },
           ],
         },
@@ -59,4 +63,70 @@ exports.create = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
-exports.get = async (req, res) => {};
+exports.get = async (req, res) => {
+  try {
+    const user = await User.findOne({
+      where: {
+        id: req.user,
+      },
+    });
+    if (!user) {
+      res.status(404).json({ message: "user_not_found" });
+    } else {
+      const userProgram = await UserProgram.findOne({
+        attributes: ["id", "date", "programId"],
+        order: [["date", "DESC"]],
+        where: {
+          userId: req.user,
+        },
+      });
+      if (userProgram) {
+        const plan = await Program.findById(
+          userProgram.programId.toString()
+        ).select(
+          "-_id -meals._id -meals.ingredients._id -__v -workouts._id -workouts.excercices._id"
+        );
+        if (plan) {
+          res.status(200).json({ data: plan });
+        }
+      } else {
+        res.status(422).json({ message: "program_not_found" });
+      }
+    }
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+exports.getPerformance = async (req, res) => {
+  try {
+    const user = await User.findOne({
+      where: {
+        id: req.user,
+      },
+    });
+    if (!user) {
+      res.status(404).json({ message: "user_not_found" });
+    } else {
+      const performance = await UserProgram.findAll({
+        where: {
+          userId: req.user,
+        },
+        attributes: [
+          "id",
+          "date",
+          "result",
+          "objectif",
+          "comment",
+          "programId",
+        ],
+      });
+      if (!performance || performance.length == 0) {
+        res.status(422).json({ message: "user_program_not_found" });
+      } else {
+        res.status(200).json({ data: performance });
+      }
+    }
+  } catch (error) {
+    res.status(500).json({ message: err.message });
+  }
+};

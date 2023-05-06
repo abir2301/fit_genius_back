@@ -203,7 +203,7 @@ exports.addHP = async (req, res) => {
     });
 
     if (!user) {
-      res.status(404).json({ message: "not found user" });
+      res.status(404).json({ message: "not_found_user" });
     } else {
       i = 0;
       list.forEach(async (element) => {
@@ -232,6 +232,8 @@ exports.addHP = async (req, res) => {
             };
 
             await UserHp.create(payload);
+          } else {
+            res.status(422).json({ message: "not_found_hp" });
           }
         }
       });
@@ -243,31 +245,3 @@ exports.addHP = async (req, res) => {
     // res.send({ error: error });
   }
 };
-
-//  else {
-//   const hp = await Hp.findOne({
-//     where: {
-//       name: req.body.name,
-//     },
-//   });
-//   console.log(hp);
-//   if (!hp) {
-//     res.status(404).json({ error: "not found hp" });
-//   } else {
-//     const data1 = { userId: req.user, HpId: hp.id };
-//     const exist = await UserHp.findOne({
-//       where: {
-//         HpId: hp.id,
-//       },
-//     });
-//     if (!exist) {
-//       console.log("not exist ");
-//       const data = await UserHp.create(data1);
-
-//       res.status(200).json({ data: data });
-//     } else {
-//       res.status(422).json({ message: "alredy exist" });
-//     }
-//     res.status(500).json({ message: error.message });
-//   }
-// }

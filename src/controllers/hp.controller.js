@@ -66,13 +66,13 @@ exports.getHp = async (req, res) => {
   })
     .then((data) => {
       if (data) {
-        res.send({ data: data, message: "hp " });
+        res.send({ data: data, message: "hp" }).status(200);
       } else {
-        res.send({ message: "hp does not exist " });
+        res.status(422).json({ message: "not_found_hp" });
       }
     })
     .catch((error) => {
-      res.send({ error: error.message });
+      res.send({ error: error.message }).status(500);
     });
 };
 exports.update = async (req, res) => {
