@@ -15,17 +15,71 @@ exports.create = async (req, res) => {
       objectif: 2,
       meals: [
         {
-          name: "meal 1",
+          name: "meal:01",
           isDone: false,
-          fibers: 1200,
-          carbs: 120,
+          fibers: 9,
+          carbs: 143,
           fats: 500,
-          protein: 100,
-          calories: 1200,
+          protein: 68,
+          calories: 1045,
           ingredients: [
             {
-              name: "potatoes",
-              quantity: 120,
+              name: "pumpkin_seeds",
+              quantity: 110,
+            },
+            {
+              name: "oranges",
+              quantity: 350,
+            },
+            {
+              name: "oregano",
+              quantity: 100,
+            },
+          ],
+        },
+        {
+          name: "meal:02",
+          isDone: false,
+          fibers: 9,
+          carbs: 143,
+          fats: 500,
+          protein: 68,
+          calories: 1045,
+          ingredients: [
+            {
+              name: "honey",
+              quantity: 110,
+            },
+            {
+              name: "gluten-free muffins",
+              quantity: 337,
+            },
+            {
+              name: "brown_rice",
+              quantity: 100,
+            },
+          ],
+        },
+        {
+          name: "meal:03",
+          isDone: false,
+          fibers: 9,
+          carbs: 143,
+          fats: 700,
+          protein: 68,
+          calories: 1000,
+          ingredients: [
+            {
+              name: "fish",
+              quantity: 129,
+            },
+            {
+              name: "oats",
+              quantity: 216,
+            },
+            {
+              name: "gluten-free bread",
+              quantity: 100,
             },
           ],
         },
@@ -35,9 +89,51 @@ exports.create = async (req, res) => {
           desc: "here is the workout ",
           excercices: [
             {
-              name: "ex1",
+              name: "Squat Jumps",
               image: "image",
-              duration: 10,
+              duration: 8,
+              isDone: false,
+            },
+            {
+              name: "Jumping Jacks",
+              image: "image",
+              duration: 8,
+              isDone: false,
+            },
+            {
+              name: "Squat Isometric Hold",
+              image: "image",
+              duration: 3,
+              isDone: false,
+            },
+            {
+              name: "Squats",
+              image: "image",
+              duration: 5,
+              isDone: false,
+            },
+            {
+              name: "Bicycle Crunches",
+              image: "image",
+              duration: 8,
+              isDone: false,
+            },
+            {
+              name: "Diamond Push-ups",
+              image: "image",
+              duration: 9,
+              isDone: false,
+            },
+            {
+              name: "Bicycle Crunches",
+              image: "image",
+              duration: 8,
+              isDone: false,
+            },
+            {
+              name: "Single-Leg Burpees",
+              image: "image",
+              duration: 8,
               isDone: false,
             },
           ],
@@ -84,7 +180,7 @@ exports.get = async (req, res) => {
         const plan = await Program.findById(
           userProgram.programId.toString()
         ).select(
-          "-_id -meals._id -meals.ingredients._id -__v -workouts._id -workouts.excercices._id"
+          "-_id  -meals._id -meals.ingredients._id -__v -workouts._id -workouts.excercices._id"
         );
         if (plan) {
           res.status(200).json({ data: plan });

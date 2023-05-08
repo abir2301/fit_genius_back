@@ -14,14 +14,13 @@ exports.create = async (req, res) => {
   const query = await Profile.findOne({ where: { userId: req.user } });
   // user does not hava a profile
   if (!query) {
-    Profile.create(profile)
-      .then((data) => {
-        res.json({ data: data });
-      })
-      .catch((error) => {
-        console.error(error);
-        res.status(500).json({ message: "Failed to create profile" });
-      });
+    const result = await Profile.create(profile);
+    if (result) {
+      res.status(200).json({ data: result });
+    } else {
+      console.error(error);
+      res.status(500).json({ message: "Failed to create profile" });
+    }
   } else {
     // profile.userId = req.id
     // query = profile.json
@@ -38,7 +37,15 @@ exports.create = async (req, res) => {
     query
       .save()
       .then((data) => {
-        res.json({ data: query, message: "update profile " });
+        const p = {
+          age: data.age,
+          height: data.height,
+          weight: data.weight,
+          goal: data.goal,
+          activity_level: data.activity_level,
+          gender: data.gender,
+        };
+        res.json({ data: p, message: "update profile " });
       })
       .catch((err) => {
         res.status(500).json({ message: "server error " });
@@ -68,7 +75,7 @@ exports.delete = async (req, res) => {
     });
 };
 exports.getProfile = async (req, res) => {
-  const profile = await Profile.findOne({
+  Profile.findOne({
     where: {
       userId: req.user,
     },
@@ -77,9 +84,10 @@ exports.getProfile = async (req, res) => {
       if (!data) {
         res.status(400).json({ message: " user profile does not exist " });
       }
-      res.status(200).json({ data: data, message: "profile" });
+      else {
+      res.status(200).json({ data: data, message: "profile" });}
     })
     .catch((error) => {
-      res.status(404).json({ error: error.message });
+      res.status(500).json({ error: error.message });
     });
 };

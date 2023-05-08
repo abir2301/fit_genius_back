@@ -26,12 +26,10 @@ exports.registration = async (req, res, next) => {
       res.status(404).json({ message: "user already exist " });
     } else {
       await User.create(user).then((data) => {
-        var token = jwt.sign({ id: data.id }, "privateKey", {
-          expiresIn: 86400,
-        });
+        var token = jwt.sign({ id: data.id }, "privateKey");
         //email send with code
 
-        res.send({ user: data, token: token });
+        res.status(200).json({ user: data, token: token });
       });
     }
   } catch (err) {

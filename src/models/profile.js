@@ -18,12 +18,12 @@ const profile = (sequelize, Sequelize) => {
         // },
       },
       weight: {
-        type: Sequelize.FLOAT,
+        type: Sequelize.TEXT,
         allowNull: true,
         isNumeric: true,
       },
       height: {
-        type: Sequelize.FLOAT,
+        type: Sequelize.TEXT,
         allowNull: true,
         isNumeric: true,
       },
